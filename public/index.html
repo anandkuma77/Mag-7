@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mag 7 — Daily Focus Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=VT323&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Decorative CRT scanline overlay for the JDM digital-cluster look -->
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark">7</span>
+        <div>
+          <h1>Mag&nbsp;7</h1>
+          <p class="subtitle">Redline focus &middot; 7 targets, nothing else tonight</p>
+        </div>
+      </div>
+
+      <div class="board-counter" id="board-counter" title="Total tasks on the board">
+        <span id="board-count-value">0</span>/7
+      </div>
+    </header>
+
+    <main class="board">
+      <!-- BLUE SECTION -->
+      <section class="section section--blue" aria-labelledby="blue-heading">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="dot dot--blue"></span>
+            <h2 id="blue-heading">Sector I &mdash; Nitro Green</h2>
+            <span class="section-count" id="blue-count">0 / 3</span>
+          </div>
+          <button class="btn btn--section btn--blue" id="add-blue-btn" data-section="blue">
+            + Add
+          </button>
+        </div>
+        <div class="task-list" id="blue-list"></div>
+      </section>
+
+      <!-- GREEN SECTION -->
+      <section class="section section--green" aria-labelledby="green-heading">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="dot dot--green"></span>
+            <h2 id="green-heading">Sector II &mdash; Voltex Magenta</h2>
+            <span class="section-count" id="green-count">0 / 4</span>
+          </div>
+          <button class="btn btn--section btn--green" id="add-green-btn" data-section="green">
+            + Add
+          </button>
+        </div>
+        <div class="task-list" id="green-list"></div>
+      </section>
+    </main>
+
+    <p class="empty-hint" id="empty-hint" hidden>
+      No tasks yet — hit <strong>+</strong> to add your first focus of the day.
+    </p>
+
+    <!-- Decorative pixel-art display: retro rocket ship, ported from the
+         CodePen "Single Element Pixel Art Mixin" box-shadow grid into
+         plain inline SVG (rect-per-run instead of one box-shadow per pixel) -->
+    <section class="pixel-showcase" aria-hidden="true">
+      <p class="pixel-showcase-label">Pixel Art &middot; <span>Rocket Ship</span></p>
+      <svg
+        class="pixel-art"
+        viewBox="0 0 15 16"
+        shape-rendering="crispEdges"
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="Pixel art of a rocket ship, white with red fins and blue portholes"
+      >
+        <rect class="ps-w" x="7" y="0" width="1" height="1" />
+        <rect class="ps-w" x="7" y="1" width="1" height="1" />
+        <rect class="ps-w" x="7" y="2" width="1" height="1" />
+        <rect class="ps-w" x="6" y="3" width="3" height="1" />
+        <rect class="ps-w" x="6" y="4" width="3" height="1" />
+        <rect class="ps-w" x="6" y="5" width="3" height="1" />
+
+        <rect class="ps-r" x="3" y="6" width="1" height="1" />
+        <rect class="ps-w" x="6" y="6" width="3" height="1" />
+        <rect class="ps-r" x="11" y="6" width="1" height="1" />
+
+        <rect class="ps-r" x="3" y="7" width="1" height="1" />
+        <rect class="ps-w" x="5" y="7" width="5" height="1" />
+        <rect class="ps-r" x="11" y="7" width="1" height="1" />
+
+        <rect class="ps-r" x="0" y="8" width="1" height="1" />
+        <rect class="ps-w" x="3" y="8" width="1" height="1" />
+        <rect class="ps-b" x="4" y="8" width="1" height="1" />
+        <rect class="ps-w" x="5" y="8" width="2" height="1" />
+        <rect class="ps-r" x="7" y="8" width="1" height="1" />
+        <rect class="ps-w" x="8" y="8" width="2" height="1" />
+        <rect class="ps-b" x="10" y="8" width="1" height="1" />
+        <rect class="ps-w" x="11" y="8" width="1" height="1" />
+        <rect class="ps-r" x="14" y="8" width="1" height="1" />
+
+        <rect class="ps-r" x="0" y="9" width="1" height="1" />
+        <rect class="ps-b" x="3" y="9" width="1" height="1" />
+        <rect class="ps-w" x="4" y="9" width="2" height="1" />
+        <rect class="ps-r" x="6" y="9" width="3" height="1" />
+        <rect class="ps-w" x="9" y="9" width="2" height="1" />
+        <rect class="ps-b" x="11" y="9" width="1" height="1" />
+        <rect class="ps-r" x="14" y="9" width="1" height="1" />
+
+        <rect class="ps-w" x="0" y="10" width="1" height="1" />
+        <rect class="ps-w" x="3" y="10" width="3" height="1" />
+        <rect class="ps-r" x="6" y="10" width="1" height="1" />
+        <rect class="ps-w" x="7" y="10" width="1" height="1" />
+        <rect class="ps-r" x="8" y="10" width="1" height="1" />
+        <rect class="ps-w" x="9" y="10" width="3" height="1" />
+        <rect class="ps-w" x="14" y="10" width="1" height="1" />
+
+        <rect class="ps-w" x="0" y="11" width="1" height="1" />
+        <rect class="ps-w" x="2" y="11" width="11" height="1" />
+        <rect class="ps-w" x="14" y="11" width="1" height="1" />
+
+        <rect class="ps-w" x="0" y="12" width="5" height="1" />
+        <rect class="ps-r" x="5" y="12" width="1" height="1" />
+        <rect class="ps-w" x="6" y="12" width="3" height="1" />
+        <rect class="ps-r" x="9" y="12" width="1" height="1" />
+        <rect class="ps-w" x="10" y="12" width="5" height="1" />
+
+        <rect class="ps-w" x="0" y="13" width="3" height="1" />
+        <rect class="ps-r" x="4" y="13" width="2" height="1" />
+        <rect class="ps-w" x="6" y="13" width="3" height="1" />
+        <rect class="ps-r" x="9" y="13" width="2" height="1" />
+        <rect class="ps-w" x="12" y="13" width="3" height="1" />
+
+        <rect class="ps-w" x="0" y="14" width="2" height="1" />
+        <rect class="ps-r" x="4" y="14" width="2" height="1" />
+        <rect class="ps-w" x="7" y="14" width="1" height="1" />
+        <rect class="ps-r" x="9" y="14" width="2" height="1" />
+        <rect class="ps-w" x="13" y="14" width="2" height="1" />
+
+        <rect class="ps-w" x="0" y="15" width="1" height="1" />
+        <rect class="ps-w" x="7" y="15" width="1" height="1" />
+        <rect class="ps-w" x="14" y="15" width="1" height="1" />
+      </svg>
+    </section>
+  </div>
+
+  <!-- Floating global add button, styled as an "Engine Start/Stop" push button -->
+  <button class="fab" id="fab-add" aria-label="Add task" title="Add a task">
+    <span class="fab-icon">+</span>
+    <span class="fab-label">Start</span>
+  </button>
+
+  <!-- Toast for quick feedback -->
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- Add Task Modal -->
+  <div class="modal-backdrop" id="add-modal-backdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <h3 id="modal-title">New Objective</h3>
+        <button class="icon-btn" id="modal-close" aria-label="Close">&times;</button>
+      </div>
+
+      <form id="add-form">
+        <label class="field-label" for="task-text-input">Task</label>
+        <input
+          type="text"
+          id="task-text-input"
+          maxlength="120"
+          placeholder="e.g. Finish the client proposal"
+          autocomplete="off"
+        />
+
+        <label class="field-label" for="task-section-select">Section</label>
+        <select id="task-section-select">
+          <option value="blue">Blue (3 max)</option>
+          <option value="green">Green (4 max)</option>
+        </select>
+
+        <p class="modal-error" id="modal-error" hidden></p>
+        <p class="modal-full-warning" id="modal-full-warning" hidden>
+          The board is full (7/7). Delete an existing task — ideally one marked
+          <strong>Done</strong> — to free up a slot before adding a new one.
+        </p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn--ghost" id="modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn--primary" id="modal-submit">Add Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

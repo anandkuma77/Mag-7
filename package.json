@@ -1,0 +1,13 @@
+{
+  "name": "magnificent-7",
+  "version": "1.0.0",
+  "description": "Mag 7 - a strictly constrained daily goal tracker (7 tasks max: 3 Blue + 4 Green)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
