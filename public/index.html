@@ -32,6 +32,21 @@
       </div>
     </header>
 
+    <!-- Pomodoro lap timer: client-side only, resumes across reloads via localStorage -->
+    <section class="pomodoro" aria-label="Pomodoro focus timer">
+      <div class="pomodoro-panel" id="pomodoro-panel">
+        <div class="pomodoro-readout">
+          <span class="pomodoro-mode" id="pomodoro-mode">Work</span>
+          <span class="pomodoro-time" id="pomodoro-time">25:00</span>
+        </div>
+        <div class="pomodoro-controls">
+          <button type="button" class="btn btn--primary" id="pomodoro-toggle">Start</button>
+          <button type="button" class="btn btn--ghost" id="pomodoro-reset">Reset</button>
+        </div>
+        <div class="pomodoro-sessions" id="pomodoro-sessions" title="Completed focus sessions today"></div>
+      </div>
+    </section>
+
     <main class="board">
       <!-- BLUE SECTION -->
       <section class="section section--blue" aria-labelledby="blue-heading">

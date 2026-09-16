@@ -31,6 +31,13 @@ const el = {
   modalError: document.getElementById("modal-error"),
   modalFullWarning: document.getElementById("modal-full-warning"),
   modalSubmit: document.getElementById("modal-submit"),
+
+  pomodoroPanel: document.getElementById("pomodoro-panel"),
+  pomodoroMode: document.getElementById("pomodoro-mode"),
+  pomodoroTime: document.getElementById("pomodoro-time"),
+  pomodoroToggle: document.getElementById("pomodoro-toggle"),
+  pomodoroReset: document.getElementById("pomodoro-reset"),
+  pomodoroSessions: document.getElementById("pomodoro-sessions"),
 };
 
 let state = { tasks: [], meta: null };
@@ -325,6 +332,233 @@ async function handleAddSubmit(e) {
 }
 
 // ---------------------------------------------------------------------------
+// Pomodoro lap timer
+//
+// Fully client-side: no server/data.json involvement. State is kept in
+// localStorage so a page reload (or closing/reopening the tab) resumes the
+// countdown accurately instead of losing progress, and the session count
+// resets automatically on a new day — matching this app's "daily" mindset.
+// ---------------------------------------------------------------------------
+
+const POMODORO_STORAGE_KEY = "mag7-pomodoro-v1";
+const POMODORO_DURATIONS = {
+  work: 25 * 60,
+  break: 5 * 60,
+  longBreak: 15 * 60,
+};
+const POMODORO_MODE_LABELS = {
+  work: "Work",
+  break: "Break",
+  longBreak: "Long Break",
+};
+
+let pomodoro = {
+  mode: "work",
+  remainingSeconds: POMODORO_DURATIONS.work,
+  isRunning: false,
+  endTimestamp: null,
+  sessionsCompleted: 0,
+  cyclePips: 0, // progress (0-4) toward the next long break; resets when a long break ends
+  date: todayKey(),
+};
+let pomodoroIntervalId = null;
+
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+function formatClock(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function savePomodoroState() {
+  try {
+    localStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(pomodoro));
+  } catch (err) {
+    // localStorage unavailable (e.g. private mode quota) — timer still works, just won't persist.
+  }
+}
+
+function loadPomodoroState() {
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem(POMODORO_STORAGE_KEY) || "null");
+  } catch (err) {
+    saved = null;
+  }
+
+  if (!saved || saved.date !== todayKey()) {
+    // New day (or first run) — start fresh.
+    pomodoro = {
+      mode: "work",
+      remainingSeconds: POMODORO_DURATIONS.work,
+      isRunning: false,
+      endTimestamp: null,
+      sessionsCompleted: 0,
+      cyclePips: 0,
+      date: todayKey(),
+    };
+    savePomodoroState();
+    return;
+  }
+
+  pomodoro = saved;
+  if (typeof pomodoro.cyclePips !== "number") {
+    // Backfill for state saved before cyclePips existed.
+    pomodoro.cyclePips = pomodoro.sessionsCompleted % 4;
+  }
+
+  if (pomodoro.isRunning && pomodoro.endTimestamp) {
+    const remaining = Math.round((pomodoro.endTimestamp - Date.now()) / 1000);
+    if (remaining <= 0) {
+      // Timer finished while the tab was closed/backgrounded — resolve once.
+      pomodoro.isRunning = false;
+      pomodoro.remainingSeconds = 0;
+      completePomodoroPhase({ silent: true });
+    } else {
+      pomodoro.remainingSeconds = remaining;
+    }
+  }
+}
+
+function renderPomodoro() {
+  el.pomodoroMode.textContent = POMODORO_MODE_LABELS[pomodoro.mode];
+  el.pomodoroTime.textContent = formatClock(Math.max(0, pomodoro.remainingSeconds));
+
+  el.pomodoroPanel.classList.remove("mode-work", "mode-break", "mode-longBreak");
+  el.pomodoroPanel.classList.add(`mode-${pomodoro.mode}`);
+  el.pomodoroPanel.classList.toggle("is-running", pomodoro.isRunning);
+
+  el.pomodoroToggle.textContent = pomodoro.isRunning ? "Pause" : "Start";
+  el.pomodoroReset.disabled = !pomodoro.isRunning && pomodoro.remainingSeconds === POMODORO_DURATIONS[pomodoro.mode];
+
+  // 4 pips per classic Pomodoro cycle (work → work → work → work → long break),
+  // wrapping around rather than growing forever.
+  el.pomodoroSessions.innerHTML = "";
+  for (let i = 0; i < 4; i++) {
+    const pip = document.createElement("span");
+    pip.className = "pomodoro-pip" + (i < pomodoro.cyclePips ? " is-filled" : "");
+    el.pomodoroSessions.appendChild(pip);
+  }
+  el.pomodoroSessions.title = `${pomodoro.sessionsCompleted} focus session${pomodoro.sessionsCompleted === 1 ? "" : "s"} completed today`;
+
+  document.title = pomodoro.isRunning
+    ? `${formatClock(Math.max(0, pomodoro.remainingSeconds))} · ${POMODORO_MODE_LABELS[pomodoro.mode]} — Mag 7`
+    : "Mag 7 — Daily Focus Tracker";
+}
+
+function playPomodoroChime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [880, 1175];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      const start = ctx.currentTime + i * 0.18;
+      gain.gain.exponentialRampToValueAtTime(0.18, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.32);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.34);
+    });
+    setTimeout(() => ctx.close(), 900);
+  } catch (err) {
+    // Web Audio unsupported/blocked — fail silently, visual flash still fires.
+  }
+}
+
+function completePomodoroPhase({ silent = false } = {}) {
+  clearInterval(pomodoroIntervalId);
+  pomodoroIntervalId = null;
+
+  const finishedMode = pomodoro.mode;
+
+  if (finishedMode === "work") {
+    pomodoro.sessionsCompleted += 1;
+    pomodoro.cyclePips += 1;
+    pomodoro.mode = pomodoro.cyclePips >= 4 ? "longBreak" : "break";
+  } else if (finishedMode === "longBreak") {
+    pomodoro.cyclePips = 0; // long break finished — fresh cycle starts now
+    pomodoro.mode = "work";
+  } else {
+    pomodoro.mode = "work";
+  }
+  pomodoro.remainingSeconds = POMODORO_DURATIONS[pomodoro.mode];
+  pomodoro.isRunning = false;
+  pomodoro.endTimestamp = null;
+  savePomodoroState();
+  renderPomodoro();
+
+  if (!silent) {
+    playPomodoroChime();
+    el.pomodoroPanel.classList.add("is-flashing");
+    setTimeout(() => el.pomodoroPanel.classList.remove("is-flashing"), 1600);
+
+    const message =
+      finishedMode === "work"
+        ? `Pit stop! ${POMODORO_MODE_LABELS[pomodoro.mode]} time.`
+        : "Break's over — back to work.";
+    showToast(message);
+  }
+}
+
+function pomodoroTick() {
+  if (!pomodoro.endTimestamp) return;
+  const remaining = Math.round((pomodoro.endTimestamp - Date.now()) / 1000);
+  if (remaining <= 0) {
+    completePomodoroPhase();
+  } else {
+    pomodoro.remainingSeconds = remaining;
+    renderPomodoro();
+  }
+}
+
+function startPomodoro() {
+  if (pomodoro.isRunning) return;
+  pomodoro.isRunning = true;
+  pomodoro.endTimestamp = Date.now() + pomodoro.remainingSeconds * 1000;
+  savePomodoroState();
+  renderPomodoro();
+  pomodoroIntervalId = setInterval(pomodoroTick, 250);
+}
+
+function pausePomodoro() {
+  if (!pomodoro.isRunning) return;
+  clearInterval(pomodoroIntervalId);
+  pomodoroIntervalId = null;
+  pomodoro.remainingSeconds = Math.max(0, Math.round((pomodoro.endTimestamp - Date.now()) / 1000));
+  pomodoro.isRunning = false;
+  pomodoro.endTimestamp = null;
+  savePomodoroState();
+  renderPomodoro();
+}
+
+function resetPomodoro() {
+  clearInterval(pomodoroIntervalId);
+  pomodoroIntervalId = null;
+  pomodoro.isRunning = false;
+  pomodoro.endTimestamp = null;
+  pomodoro.remainingSeconds = POMODORO_DURATIONS[pomodoro.mode];
+  savePomodoroState();
+  renderPomodoro();
+}
+
+function initPomodoro() {
+  loadPomodoroState();
+  renderPomodoro();
+  if (pomodoro.isRunning) {
+    pomodoroIntervalId = setInterval(pomodoroTick, 250);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Event wiring
 // ---------------------------------------------------------------------------
 
@@ -351,8 +585,18 @@ document.addEventListener("keydown", (e) => {
 el.addForm.addEventListener("submit", handleAddSubmit);
 el.taskSectionSelect.addEventListener("change", updateModalTheme);
 
+el.pomodoroToggle.addEventListener("click", () => {
+  if (pomodoro.isRunning) {
+    pausePomodoro();
+  } else {
+    startPomodoro();
+  }
+});
+el.pomodoroReset.addEventListener("click", resetPomodoro);
+
 // ---------------------------------------------------------------------------
 // Boot
 // ---------------------------------------------------------------------------
 
 loadTasks();
+initPomodoro();

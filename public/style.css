@@ -908,6 +908,155 @@ body {
   box-shadow: var(--shadow-lg), 0 0 18px -4px rgba(255, 59, 78, 0.6);
 }
 
+/* ---------- Pomodoro : lap timer gauge ---------- */
+
+.pomodoro {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 26px;
+}
+
+.pomodoro-panel {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: linear-gradient(180deg, var(--panel), #101014);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 24px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pomodoro-readout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 128px;
+}
+
+.pomodoro-mode {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--running);
+  text-shadow: 0 0 8px var(--running-glow);
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+.pomodoro-time {
+  font-family: var(--font-mono);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+  line-height: 1;
+}
+
+/* Mode-driven accent: work = boost pink, break = nitro green, long break = podium gold */
+.pomodoro-panel.mode-work {
+  border-color: var(--running);
+  box-shadow: 0 0 24px -8px var(--running-glow), var(--shadow);
+}
+.pomodoro-panel.mode-work .pomodoro-mode {
+  color: var(--running);
+  text-shadow: 0 0 8px var(--running-glow);
+}
+
+.pomodoro-panel.mode-break {
+  border-color: var(--blue-border);
+  box-shadow: 0 0 24px -8px var(--blue-glow), var(--shadow);
+}
+.pomodoro-panel.mode-break .pomodoro-mode {
+  color: var(--blue);
+  text-shadow: 0 0 8px var(--blue-glow);
+}
+
+.pomodoro-panel.mode-longBreak {
+  border-color: var(--done-border);
+  box-shadow: 0 0 24px -8px var(--done-glow), var(--shadow);
+}
+.pomodoro-panel.mode-longBreak .pomodoro-mode {
+  color: var(--done);
+  text-shadow: 0 0 8px var(--done-glow);
+}
+
+.pomodoro-panel.is-running .pomodoro-time {
+  animation: pomodoro-tick-glow 1s ease-in-out infinite;
+}
+
+@keyframes pomodoro-tick-glow {
+  0%,
+  100% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+  }
+  50% {
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.55);
+  }
+}
+
+.pomodoro-panel.is-flashing {
+  animation: pomodoro-alert-flash 0.5s ease-in-out 3;
+}
+
+@keyframes pomodoro-alert-flash {
+  0%,
+  100% {
+    box-shadow: 0 0 24px -8px var(--running-glow), var(--shadow);
+  }
+  50% {
+    box-shadow: 0 0 46px 4px var(--running-glow), var(--shadow);
+  }
+}
+
+.pomodoro-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.pomodoro-controls .btn {
+  min-width: 84px;
+}
+
+.pomodoro-sessions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 140px;
+}
+
+.pomodoro-pip {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+
+.pomodoro-pip.is-filled {
+  background: var(--done);
+  border-color: var(--done);
+  box-shadow: 0 0 6px 1px var(--done-glow);
+}
+
+@media (max-width: 520px) {
+  .pomodoro-panel {
+    padding: 14px 18px;
+    gap: 14px;
+  }
+  .pomodoro-time {
+    font-size: 28px;
+  }
+}
+
 /* ---------- Pixel Art : retro rocket ship display ---------- */
 
 .pixel-showcase {
