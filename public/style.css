@@ -1,65 +1,75 @@
 /* =====================================================================
-   ROCKET 7 — "Retro 90s JDM Digital Dashboard" theme
-   Kanjozoku-inspired neon livery palette:
-     #39FF14 (Nitro Green) · #AB03A9 (Voltex Magenta)
-     #FF467A (Boost Pink)  · #FFD51E (Podium Gold)
+   ROCKET 7 — "Luna Wolves" Pre-Heresy Command Console theme
+   Legion flagship tactical HUD palette:
+     Pearl/Ash armor plate · Gunmetal/Slate panels
+     Polished bronze/brass trim · Cold amber & sea-green optics
    Pure CSS reskin — no JS/markup logic depends on any value in this file.
    ===================================================================== */
 
 :root {
-  /* Panels / base */
-  --bg: #0b0b0d;
-  --panel: #15151a;
-  --panel-alt: #1a1a21;
-  --text: #eef0f6;
-  --text-dim: #9a9aab;
-  --text-muted: #6b6b7d;
-  --border: #2a2a34;
-  --border-soft: rgba(255, 255, 255, 0.08);
+  /* Surfaces */
+  --bg: #101215;
+  --panel: #161a1e;
+  --panel-alt: #1c2024;
+  --pearl: #ede8dc;
+  --pearl-alt: #ded7c6;
+  --text: #f0ece1;
+  --text-dim: #9a9c9f;
+  --text-muted: #6f7378;
+  --text-on-pearl: #20242a;
+  --text-on-pearl-dim: #565247;
+  --border: #34383f;
+  --border-soft: rgba(255, 255, 255, 0.06);
 
-  --shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 6px 18px rgba(0, 0, 0, 0.65);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.85);
+  --shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 6px 16px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.75);
 
-  --radius: 12px;
-  --radius-sm: 8px;
+  --radius: 0px;
+  --radius-sm: 0px;
 
   /* Fonts */
   --font-display: "Orbitron", "Share Tech Mono", sans-serif;
   --font-mono: "Share Tech Mono", "VT323", "Courier New", monospace;
 
-  /* Sector I — Nitro Green */
-  --blue: #39ff14;
-  --blue-dark: #1fa80a;
-  --blue-glow: rgba(57, 255, 20, 0.6);
-  --blue-bg: rgba(57, 255, 20, 0.12);
-  --blue-border: rgba(90, 255, 70, 0.55);
+  /* Sector I — Primary Directive (3 slots) — polished brass identity */
+  --blue: #c9a667;
+  --blue-dark: #9c7a45;
+  --blue-glow: rgba(201, 166, 103, 0.5);
+  --blue-bg: rgba(201, 166, 103, 0.1);
+  --blue-border: rgba(201, 166, 103, 0.45);
 
-  /* Sector II — Voltex Magenta */
-  --green: #ab03a9;
-  --green-dark: #7a0279;
-  --green-glow: rgba(171, 3, 169, 0.6);
-  --green-bg: rgba(171, 3, 169, 0.12);
-  --green-border: rgba(214, 47, 212, 0.6);
+  /* Sector II — Secondary Directive (4 slots) — cold steel identity */
+  --green: #8ca0aa;
+  --green-dark: #62747c;
+  --green-glow: rgba(140, 160, 170, 0.45);
+  --green-bg: rgba(140, 160, 170, 0.1);
+  --green-border: rgba(140, 160, 170, 0.4);
 
-  /* Engine states */
-  --ready: #7d7d8c;
-  --ready-bg: rgba(255, 255, 255, 0.045);
-  --running: #ff467a;
-  --running-glow: rgba(255, 70, 122, 0.7);
-  --running-bg: rgba(255, 70, 122, 0.1);
-  --done: #ffd51e;
-  --done-bg: rgba(255, 213, 30, 0.1);
-  --done-glow: rgba(255, 213, 30, 0.65);
-  --done-border: rgba(255, 213, 30, 0.55);
+  /* Directive states */
+  --ready: #767b82;
+  --ready-bg: rgba(255, 255, 255, 0.04);
+  --running: #d99a3c;
+  --running-glow: rgba(217, 154, 60, 0.55);
+  --running-bg: rgba(217, 154, 60, 0.1);
+  --done: #2fb79e;
+  --done-bg: rgba(47, 183, 158, 0.1);
+  --done-glow: rgba(47, 183, 158, 0.5);
+  --done-border: rgba(47, 183, 158, 0.45);
 
-  --danger: #ff3b4e;
+  --danger: #b5332e;
+  --danger-glow: rgba(181, 51, 46, 0.55);
+
+  /* Bronze/brass trim */
+  --bronze: #9c7a45;
+  --bronze-bright: #c9a667;
+  --brass-highlight: #e4c989;
 }
 
 * {
   box-sizing: border-box;
 }
 
-/* ---------- Global surface: dark charcoal + carbon-fiber weave + grid ---------- */
+/* ---------- Global surface: gunmetal void + tactical grid ---------- */
 
 html,
 body {
@@ -72,19 +82,15 @@ body {
   color: var(--text);
   background-color: var(--bg);
   background-image:
-    /* carbon-fiber diagonal weave */
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.025) 0px, rgba(255, 255, 255, 0.025) 2px, transparent 2px, transparent 6px),
-    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 2px, transparent 2px, transparent 6px),
-    /* faint garage grid */
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0px, transparent 1px, transparent 42px),
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0px, transparent 1px, transparent 42px),
-    radial-gradient(ellipse at 50% -10%, rgba(0, 217, 255, 0.08), transparent 55%),
-    radial-gradient(ellipse at 100% 110%, rgba(57, 255, 122, 0.07), transparent 55%),
-    linear-gradient(180deg, #101013, #08080a 60%);
+    /* tactical grid — sharp 1px hairlines */
+    repeating-linear-gradient(0deg, rgba(201, 166, 103, 0.05) 0px, transparent 1px, transparent 48px),
+    repeating-linear-gradient(90deg, rgba(201, 166, 103, 0.05) 0px, transparent 1px, transparent 48px),
+    radial-gradient(ellipse at 50% -10%, rgba(201, 166, 103, 0.06), transparent 55%),
+    linear-gradient(180deg, #14161a, #0c0d0f 65%);
   background-attachment: fixed;
 }
 
-/* CRT scanline overlay — purely decorative, sits above everything */
+/* CRT/HUD scanline overlay — purely decorative, sits above everything */
 .crt-overlay {
   position: fixed;
   inset: 0;
@@ -92,13 +98,13 @@ body {
   z-index: 999;
   background-image: repeating-linear-gradient(
     0deg,
-    rgba(255, 255, 255, 0.03) 0px,
-    rgba(255, 255, 255, 0.03) 1px,
+    rgba(255, 255, 255, 0.02) 0px,
+    rgba(255, 255, 255, 0.02) 1px,
     transparent 1px,
     transparent 3px
   );
   mix-blend-mode: overlay;
-  opacity: 0.55;
+  opacity: 0.4;
 }
 
 .app {
@@ -108,7 +114,7 @@ body {
   position: relative;
 }
 
-/* ---------- Header : gauge cluster top bar ---------- */
+/* ---------- Header : Legion command placard ---------- */
 
 .app-header {
   display: flex;
@@ -117,7 +123,7 @@ body {
   margin-bottom: 30px;
   gap: 16px;
   padding-bottom: 18px;
-  border-bottom: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--bronze);
 }
 
 .brand {
@@ -130,41 +136,37 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #1c1c22, #0a0a0c 75%);
-  color: var(--blue);
+  width: 46px;
+  height: 46px;
+  border-radius: 0;
+  background: linear-gradient(180deg, #22262b, #12141a 75%);
+  color: var(--brass-highlight);
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 20px;
+  font-size: 19px;
   flex-shrink: 0;
-  border: 2px solid var(--border);
+  border: 2px solid var(--bronze);
   box-shadow:
-    0 0 0 3px #0a0a0c,
-    0 0 14px 1px var(--blue-glow),
-    inset 0 0 8px rgba(0, 217, 255, 0.35);
+    0 0 0 3px #0c0d0f,
+    inset 0 0 8px rgba(0, 0, 0, 0.6);
   text-shadow: 0 0 8px var(--blue-glow);
 }
 
 .app-header h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 23px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: linear-gradient(90deg, var(--blue), var(--green));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 6px rgba(0, 217, 255, 0.35));
+  color: var(--pearl);
+  text-shadow: 0 0 10px rgba(201, 166, 103, 0.3);
 }
 
 .subtitle {
   margin: 3px 0 0;
   font-size: 11px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
@@ -172,36 +174,33 @@ body {
 .board-counter {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 0.05em;
-  background: linear-gradient(180deg, #0d0d10, #060607);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 9px 18px;
-  box-shadow:
-    inset 0 0 10px rgba(0, 0, 0, 0.8),
-    0 0 12px -2px var(--blue-glow);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  background: linear-gradient(180deg, #17191d, #0e0f11);
+  border: 1px solid var(--bronze);
+  border-radius: 0;
+  padding: 9px 16px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
   white-space: nowrap;
   color: var(--text-dim);
 }
 
 .board-counter #board-count-value {
-  color: var(--blue);
-  text-shadow: 0 0 8px var(--blue-glow);
+  color: var(--brass-highlight);
+  text-shadow: 0 0 6px var(--blue-glow);
 }
 
 .board-counter.is-full {
-  box-shadow:
-    inset 0 0 10px rgba(0, 0, 0, 0.8),
-    0 0 16px 0 var(--running-glow);
+  border-color: var(--danger);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 0 14px -2px var(--danger-glow);
 }
 
 .board-counter.is-full #board-count-value {
-  color: var(--running);
-  text-shadow: 0 0 10px var(--running-glow);
+  color: var(--danger);
+  text-shadow: 0 0 8px var(--danger-glow);
 }
 
-/* ---------- Board / Sections : gauge cluster pods ---------- */
+/* ---------- Board / Sections : command chamber vs manifest bay ---------- */
 
 .board {
   display: grid;
@@ -216,44 +215,53 @@ body {
 }
 
 .section {
-  background: linear-gradient(180deg, var(--panel), #101014);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border-radius: 0;
   box-shadow: var(--shadow);
-  padding: 18px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 0;
   min-height: 220px;
   position: relative;
   overflow: hidden;
 }
 
-.section::before {
-  /* faint dashboard hood sheen */
+/* Sector I — Primary Directive (3 slots): pearl/ash armor plate,
+   sealed command-chamber framing via corner brackets */
+.section--blue {
+  background: linear-gradient(180deg, var(--pearl), var(--pearl-alt));
+  border: 1px solid var(--bronze);
+}
+
+.section--blue::before,
+.section--blue::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 40%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--brass-highlight);
   pointer-events: none;
+  z-index: 2;
+}
+.section--blue::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+.section--blue::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
 }
 
-.section--blue {
-  border-top: 3px solid var(--blue);
-  border-color: var(--blue-border);
-  box-shadow:
-    0 0 0 1px rgba(0, 217, 255, 0.12) inset,
-    0 0 30px -10px var(--blue-glow),
-    var(--shadow);
-}
-
+/* Sector II — Secondary Directive (4 slots): gunmetal/slate manifest bay,
+   open framing via a heavier bronze top rule */
 .section--green {
-  border-top: 3px solid var(--green);
-  border-color: var(--green-border);
-  box-shadow:
-    0 0 0 1px rgba(57, 255, 122, 0.12) inset,
-    0 0 30px -10px var(--green-glow),
-    var(--shadow);
+  background: linear-gradient(180deg, var(--panel-alt), var(--panel));
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--bronze);
 }
 
 .section-header {
@@ -263,6 +271,13 @@ body {
   gap: 10px;
   position: relative;
   z-index: 1;
+  background: rgba(0, 0, 0, 0.32);
+  border-bottom: 1px solid var(--bronze);
+  padding: 14px 18px;
+}
+
+.section--blue .section-header {
+  background: rgba(10, 10, 8, 0.55);
 }
 
 .section-title {
@@ -278,36 +293,38 @@ body {
 .section-title h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: var(--text);
 }
 
 .section--blue .section-title h2 {
   color: var(--blue);
-  text-shadow: 0 0 8px var(--blue-glow);
+  text-shadow: 0 0 6px var(--blue-glow);
 }
 
 .section--green .section-title h2 {
   color: var(--green);
-  text-shadow: 0 0 8px var(--green-glow);
+  text-shadow: 0 0 6px var(--green-glow);
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 0;
   flex-shrink: 0;
+  transform: rotate(45deg);
 }
 
 .dot--blue {
   background: var(--blue);
-  box-shadow: 0 0 8px 1px var(--blue-glow);
+  box-shadow: 0 0 6px 1px var(--blue-glow);
 }
 .dot--green {
   background: var(--green);
-  box-shadow: 0 0 8px 1px var(--green-glow);
+  box-shadow: 0 0 6px 1px var(--green-glow);
 }
 
 .section-count {
@@ -315,11 +332,17 @@ body {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--text-dim);
+  color: var(--brass-highlight);
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--border-soft);
-  border-radius: 999px;
+  border: 1px solid var(--bronze);
+  border-radius: 0;
   padding: 3px 10px;
+}
+
+.section-count.is-full {
+  border-color: var(--danger);
+  color: var(--danger);
+  box-shadow: 0 0 8px -1px var(--danger-glow);
 }
 
 .task-list {
@@ -329,9 +352,10 @@ body {
   flex: 1;
   position: relative;
   z-index: 1;
+  padding: 16px 18px 18px;
 }
 
-/* ---------- Buttons ---------- */
+/* ---------- Buttons : brushed steel toggles ---------- */
 
 .btn {
   border: none;
@@ -341,9 +365,9 @@ body {
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   padding: 9px 14px;
-  transition: transform 0.08s ease, filter 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.1s linear, background-color 0.1s linear, box-shadow 0.1s linear, transform 0.06s ease;
 }
 
 .btn:active {
@@ -366,13 +390,13 @@ body {
 
 .btn--section.btn--blue {
   background: var(--blue-bg);
-  color: var(--blue);
+  color: var(--blue-dark);
   border: 1px solid var(--blue-border);
 }
 .btn--section.btn--blue:hover:not(:disabled) {
   background: var(--blue);
-  color: #001217;
-  box-shadow: 0 0 16px 0 var(--blue-glow);
+  color: #1c1206;
+  box-shadow: 0 0 12px -2px var(--blue-glow);
 }
 
 .btn--section.btn--green {
@@ -382,19 +406,20 @@ body {
 }
 .btn--section.btn--green:hover:not(:disabled) {
   background: var(--green);
-  color: #001a08;
-  box-shadow: 0 0 16px 0 var(--green-glow);
+  color: #0d1417;
+  box-shadow: 0 0 12px -2px var(--green-glow);
 }
 
 .btn--primary {
-  background: linear-gradient(180deg, #1c1c22, #0e0e11);
+  background: linear-gradient(180deg, #22262b, #12141a);
   color: var(--blue);
   border: 1px solid var(--blue-border);
   padding: 10px 20px;
-  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .btn--primary:hover:not(:disabled) {
-  box-shadow: 0 0 16px -2px var(--blue-glow);
+  box-shadow: 0 0 14px -2px var(--blue-glow);
+  border-color: var(--brass-highlight);
 }
 
 .modal-backdrop.modal-theme-green .btn--primary {
@@ -402,7 +427,7 @@ body {
   border-color: var(--green-border);
 }
 .modal-backdrop.modal-theme-green .btn--primary:hover:not(:disabled) {
-  box-shadow: 0 0 16px -2px var(--green-glow);
+  box-shadow: 0 0 14px -2px var(--green-glow);
 }
 
 .btn--ghost {
@@ -419,101 +444,100 @@ body {
 .icon-btn {
   background: transparent;
   border: none;
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
   color: var(--text-dim);
   cursor: pointer;
   padding: 0 4px;
 }
 .icon-btn:hover {
-  color: var(--running);
-  text-shadow: 0 0 8px var(--running-glow);
+  color: var(--brass-highlight);
+  text-shadow: 0 0 6px var(--blue-glow);
 }
 
-/* ---------- Task Card : LCD gauge readout ---------- */
+/* ---------- Task Card : instrument readout insert ---------- */
 
 .task-card {
-  background: linear-gradient(180deg, var(--panel-alt), #121216);
+  background: linear-gradient(180deg, var(--panel-alt), #14171a);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--ready);
+  border-radius: 0;
   padding: 10px 14px;
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  transition: border-color 0.1s linear, box-shadow 0.1s linear, transform 0.08s ease;
   position: relative;
 }
 
-.section--blue .task-card {
-  border-color: var(--blue-border);
-  box-shadow: 0 0 12px -6px var(--blue-glow);
-}
-
+.section--blue .task-card,
 .section--green .task-card {
-  border-color: var(--green-border);
-  box-shadow: 0 0 12px -6px var(--green-glow);
+  border-color: var(--border);
 }
 
 .task-card:hover {
-  box-shadow: 0 0 18px -4px currentColor, var(--shadow);
+  border-color: var(--bronze-bright);
+  box-shadow: inset 0 0 0 1px rgba(201, 166, 103, 0.35);
+  transform: translateY(-1px);
 }
 
-/* State icon — sits before the task text, like a dashboard tell-tale light */
+/* State indicator — square tactical tell-tale, not a soft LED */
 .task-card::before {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1;
   border: 1px solid var(--border-soft);
   background: rgba(0, 0, 0, 0.35);
+  color: var(--ready);
 }
 
 .task-card.state-ready::before {
   content: "–";
   color: var(--ready);
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
-@keyframes shift-light-pulse {
+@keyframes optic-pulse {
   0%,
   100% {
     box-shadow: 0 0 4px 1px var(--running-glow);
     opacity: 1;
   }
   50% {
-    box-shadow: 0 0 16px 5px var(--running-glow);
-    opacity: 0.65;
+    box-shadow: 0 0 10px 2px var(--running-glow);
+    opacity: 0.75;
   }
 }
 
 .task-card.state-running::before {
   content: "";
-  width: 12px;
-  height: 12px;
   background: var(--running);
   border-color: var(--running);
-  animation: shift-light-pulse 0.9s ease-in-out infinite;
+  animation: optic-pulse 1.6s ease-in-out infinite;
 }
 
 .task-card.state-done::before {
-  content: "🏁";
-  font-size: 15px;
-  background: transparent;
-  border-color: transparent;
+  content: "";
+  background: var(--done);
+  border-color: var(--done);
+  box-shadow: 0 0 6px 1px var(--done-glow);
 }
 
 .task-card.state-running {
   border-color: var(--running);
-  box-shadow: 0 0 16px -4px var(--running-glow);
+  border-left-color: var(--running);
+  box-shadow: 0 0 0 1px rgba(217, 154, 60, 0.2), 0 0 12px -4px var(--running-glow);
 }
 
 .task-card.state-done {
   border-color: var(--done-border);
+  border-left-color: var(--done);
 }
 
 .task-main {
@@ -528,35 +552,35 @@ body {
   word-break: break-word;
   cursor: text;
   outline: none;
-  border-radius: 6px;
+  border-radius: 0;
   padding: 2px 4px;
   margin: -2px -4px 4px;
   color: var(--text);
-  transition: opacity 0.15s ease, color 0.15s ease, text-shadow 0.15s ease;
+  transition: opacity 0.1s ease, color 0.1s ease, text-shadow 0.1s ease;
 }
 
 .task-text:focus {
-  background: rgba(0, 217, 255, 0.06);
+  background: rgba(201, 166, 103, 0.08);
   box-shadow: 0 0 0 1px var(--blue-border);
 }
 
-/* Ready — idle: dimmed dashboard light */
+/* Ready — idle: dimmed readout */
 .task-card.state-ready .task-text {
-  opacity: 0.6;
+  opacity: 0.75;
 }
 
-/* Running — redline / boost: bright glowing white text */
+/* Running — active directive: bright amber-lit text */
 .task-card.state-running .task-text {
   opacity: 1;
   color: #ffffff;
   font-weight: 700;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.85), 0 0 14px var(--running-glow);
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.7), 0 0 12px var(--running-glow);
 }
 
-/* Done — garaged: readable white text, no strikethrough */
+/* Done — closed directive: legible, muted, no strikethrough */
 .task-card.state-done .task-text {
-  opacity: 1;
-  color: #ffffff;
+  opacity: 0.85;
+  color: var(--text-dim);
   text-decoration: none;
 }
 
@@ -567,19 +591,20 @@ body {
   flex-wrap: wrap;
 }
 
-/* Three-stage segmented toggle: Ready / Run / Done — like dash mode buttons */
+/* Three-stage segmented toggle: Ready / Run / Done — rank-bar switch */
 
 .state-toggle {
   display: inline-flex;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--border-soft);
-  border-radius: 999px;
-  padding: 4px;
-  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0;
+  gap: 1px;
 }
 
 .state-toggle-btn {
   border: none;
+  border-left: 1px solid var(--border-soft);
   background: transparent;
   font-family: var(--font-display);
   font-size: 12px;
@@ -587,39 +612,42 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-muted);
-  padding: 10px 22px;
+  padding: 10px 20px;
   min-width: 64px;
   text-align: center;
-  border-radius: 999px;
+  border-radius: 0;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+  transition: background 0.1s linear, color 0.1s linear, transform 0.06s ease, box-shadow 0.1s linear;
+}
+
+.state-toggle-btn:first-child {
+  border-left: none;
 }
 
 .state-toggle-btn:hover:not(.is-active) {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .state-toggle-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.96);
 }
 
 .state-toggle-btn--ready.is-active {
   background-color: var(--ready);
-  color: #10101a;
+  color: #12131a;
 }
 
 .state-toggle-btn--running.is-active {
   background-color: var(--running);
-  color: #1a0500;
-  box-shadow: 0 0 10px 1px var(--running-glow);
-  animation: shift-light-pulse 1.6s ease-in-out infinite;
+  color: #1c1000;
+  box-shadow: 0 0 8px 1px var(--running-glow);
 }
 
 .state-toggle-btn--done.is-active {
   background-color: var(--done);
-  color: #1c1400;
-  box-shadow: 0 0 10px 1px var(--done-glow);
+  color: #00201a;
+  box-shadow: 0 0 8px 1px var(--done-glow);
 }
 
 .task-actions {
@@ -636,29 +664,35 @@ body {
   font-size: 16px;
   cursor: pointer;
   padding: 4px 6px;
-  border-radius: 6px;
+  border-radius: 0;
   line-height: 1;
 }
 .delete-btn:hover {
-  background: rgba(255, 59, 78, 0.12);
+  background: rgba(181, 51, 46, 0.12);
   color: var(--danger);
-  text-shadow: 0 0 8px rgba(255, 59, 78, 0.6);
+  text-shadow: 0 0 6px var(--danger-glow);
 }
 
-/* Empty slot placeholder — unlit dashboard bay */
+/* Empty slot placeholder — reserved, unlit instrument bay */
 
 .empty-slot {
-  border: 1.5px dashed var(--border);
-  border-radius: var(--radius-sm);
+  border: 1.5px dashed var(--bronze);
+  border-radius: 0;
   padding: 12px 14px;
   font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--text-muted);
   text-align: center;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.15);
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.1s linear, color 0.1s linear, background 0.1s linear, box-shadow 0.1s linear;
+}
+
+.section--blue .empty-slot {
+  border-color: var(--bronze);
+  background: rgba(0, 0, 0, 0.06);
 }
 
 .empty-slot:hover {
@@ -667,13 +701,13 @@ body {
 
 .section--blue .empty-slot:hover {
   border-color: var(--blue);
-  color: var(--blue);
-  box-shadow: 0 0 14px -6px var(--blue-glow);
+  color: var(--blue-dark);
+  box-shadow: inset 0 0 0 1px var(--blue-border);
 }
 .section--green .empty-slot:hover {
   border-color: var(--green);
   color: var(--green);
-  box-shadow: 0 0 14px -6px var(--green-glow);
+  box-shadow: inset 0 0 0 1px var(--green-border);
 }
 
 .empty-hint {
@@ -681,21 +715,22 @@ body {
   color: var(--text-muted);
   margin-top: 24px;
   font-size: 13px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-/* ---------- Floating Add Button: ENGINE START/STOP push button ---------- */
+/* ---------- Floating Add Button: tactical panel toggle ---------- */
 
 .fab {
   position: fixed;
   bottom: 32px;
   right: 32px;
-  width: 74px;
-  height: 74px;
-  border-radius: 50%;
-  border: 3px solid #1a0022;
-  background: radial-gradient(circle at 32% 28%, #ff8fae 0%, #ff467a 40%, #ab03a9 75%, #35014f 100%);
-  color: #fff2f8;
+  width: 62px;
+  height: 62px;
+  border-radius: 0;
+  border: 2px solid var(--bronze);
+  background: linear-gradient(180deg, #2a2e34 0%, #181a1e 60%, #0e0f11 100%);
+  color: var(--brass-highlight);
   font-family: var(--font-display);
   cursor: pointer;
   display: flex;
@@ -704,19 +739,16 @@ body {
   justify-content: center;
   gap: 1px;
   box-shadow:
-    0 0 0 4px #151517,
-    0 8px 18px rgba(0, 0, 0, 0.7),
-    inset 0 3px 5px rgba(255, 255, 255, 0.45),
-    inset 0 -8px 12px rgba(0, 0, 0, 0.55),
-    0 0 22px 2px rgba(255, 70, 122, 0.5);
-  transition: transform 0.12s ease, box-shadow 0.2s ease, filter 0.15s ease;
+    0 0 0 3px #0c0d0f,
+    0 8px 16px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: border-color 0.12s linear, box-shadow 0.15s linear, transform 0.1s ease;
 }
 
 .fab-icon {
-  font-size: 26px;
+  font-size: 22px;
   line-height: 1;
   font-weight: 700;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 .fab-label {
@@ -727,45 +759,42 @@ body {
 }
 
 .fab:hover {
+  border-color: var(--brass-highlight);
   transform: translateY(-2px);
   box-shadow:
-    0 0 0 4px #151517,
-    0 10px 20px rgba(0, 0, 0, 0.7),
-    inset 0 3px 5px rgba(255, 255, 255, 0.5),
-    inset 0 -8px 12px rgba(0, 0, 0, 0.5),
-    0 0 34px 6px rgba(255, 70, 122, 0.7);
+    0 0 0 3px #0c0d0f,
+    0 10px 20px rgba(0, 0, 0, 0.65),
+    0 0 16px -2px var(--blue-glow);
 }
 
 .fab:active {
   transform: translateY(1px) scale(0.96);
   box-shadow:
-    0 0 0 4px #151517,
-    inset 0 6px 10px rgba(0, 0, 0, 0.7),
-    inset 0 -2px 4px rgba(255, 255, 255, 0.2),
-    0 0 40px 8px rgba(171, 3, 169, 0.85);
+    0 0 0 3px #0c0d0f,
+    inset 0 4px 8px rgba(0, 0, 0, 0.6);
 }
 
 .fab.is-disabled {
   cursor: not-allowed;
-  filter: grayscale(0.75) brightness(0.55);
+  filter: grayscale(0.6) brightness(0.6);
+  border-color: var(--border);
   box-shadow:
-    0 0 0 4px #151517,
-    inset 0 3px 5px rgba(255, 255, 255, 0.15),
-    inset 0 -8px 12px rgba(0, 0, 0, 0.55);
+    0 0 0 3px #0c0d0f,
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* ---------- Modal : diagnostic panel ---------- */
+/* ---------- Modal : mission briefing panel ---------- */
 
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(2, 2, 4, 0.75);
+  background: rgba(4, 4, 5, 0.78);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 50;
   padding: 16px;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(1px);
 }
 
 .modal-backdrop[hidden] {
@@ -773,21 +802,21 @@ body {
 }
 
 .modal {
-  background: linear-gradient(180deg, var(--panel), #0d0d10);
+  background: linear-gradient(180deg, var(--panel), #101215);
   border: 1px solid var(--blue-border);
-  border-radius: var(--radius);
+  border-radius: 0;
   padding: 22px;
   width: 100%;
   max-width: 400px;
-  box-shadow: var(--shadow-lg), 0 0 40px -12px var(--blue-glow);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(201, 166, 103, 0.08);
+  transition: border-color 0.15s linear, box-shadow 0.15s linear;
 }
 
 /* Popup recolors to match whichever section is selected in the form —
    toggled by app.js (updateModalTheme) whenever the section dropdown changes. */
 .modal-backdrop.modal-theme-green .modal {
   border-color: var(--green-border);
-  box-shadow: var(--shadow-lg), 0 0 40px -12px var(--green-glow);
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(140, 160, 170, 0.1);
 }
 
 .modal-header {
@@ -795,22 +824,24 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
 }
 
 .modal-header h3 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 15px;
-  letter-spacing: 0.08em;
+  font-size: 14px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--blue);
-  text-shadow: 0 0 8px var(--blue-glow);
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+  text-shadow: 0 0 6px var(--blue-glow);
+  transition: color 0.15s ease, text-shadow 0.15s ease;
 }
 
 .modal-backdrop.modal-theme-green .modal-header h3 {
   color: var(--green);
-  text-shadow: 0 0 8px var(--green-glow);
+  text-shadow: 0 0 6px var(--green-glow);
 }
 
 .field-label {
@@ -829,10 +860,10 @@ body {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   font-size: 14px;
   font-family: var(--font-mono);
-  background: #0a0a0d;
+  background: #0c0d0f;
   color: var(--text);
 }
 
@@ -844,27 +875,27 @@ body {
 #task-section-select:focus {
   outline: none;
   border-color: var(--blue);
-  box-shadow: 0 0 10px -2px var(--blue-glow);
+  box-shadow: 0 0 0 1px var(--blue-border);
 }
 
 .modal-backdrop.modal-theme-green #task-text-input:focus,
 .modal-backdrop.modal-theme-green #task-section-select:focus {
   border-color: var(--green);
-  box-shadow: 0 0 10px -2px var(--green-glow);
+  box-shadow: 0 0 0 1px var(--green-border);
 }
 
 .modal-error {
   color: var(--danger);
   font-size: 13px;
   margin: 10px 0 0;
-  text-shadow: 0 0 6px rgba(255, 59, 78, 0.4);
+  text-shadow: 0 0 4px rgba(181, 51, 46, 0.4);
 }
 
 .modal-full-warning {
-  color: #ffc2d6;
-  background: var(--running-bg);
-  border: 1px solid rgba(255, 70, 122, 0.35);
-  border-radius: var(--radius-sm);
+  color: #f0c7c4;
+  background: rgba(181, 51, 46, 0.12);
+  border: 1px solid rgba(181, 51, 46, 0.4);
+  border-radius: 0;
   padding: 10px 12px;
   font-size: 12px;
   margin: 14px 0 0;
@@ -877,25 +908,25 @@ body {
   margin-top: 20px;
 }
 
-/* ---------- Toast : dashboard alert readout ---------- */
+/* ---------- Toast : command-log readout ---------- */
 
 .toast {
   position: fixed;
   bottom: 32px;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background: linear-gradient(180deg, #14141a, #0a0a0d);
+  background: linear-gradient(180deg, #17191d, #0d0e10);
   border: 1px solid var(--blue-border);
   color: var(--text);
   padding: 10px 18px;
-  border-radius: 999px;
+  border-radius: 0;
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.03em;
-  box-shadow: var(--shadow-lg), 0 0 18px -4px var(--blue-glow);
+  letter-spacing: 0.04em;
+  box-shadow: var(--shadow-lg);
   z-index: 60;
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .toast.show {
@@ -905,10 +936,10 @@ body {
 
 .toast.toast--error {
   border-color: var(--danger);
-  box-shadow: var(--shadow-lg), 0 0 18px -4px rgba(255, 59, 78, 0.6);
+  box-shadow: var(--shadow-lg), 0 0 14px -4px var(--danger-glow);
 }
 
-/* ---------- Pomodoro : lap timer gauge ---------- */
+/* ---------- Pomodoro : chronometer plaque ---------- */
 
 .pomodoro {
   display: flex;
@@ -922,12 +953,12 @@ body {
   gap: 22px;
   flex-wrap: wrap;
   justify-content: center;
-  background: linear-gradient(180deg, var(--panel), #101014);
+  background: linear-gradient(180deg, var(--panel), #0e1013);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 0;
   padding: 16px 24px;
   box-shadow: var(--shadow);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: border-color 0.2s linear, box-shadow 0.2s linear;
 }
 
 .pomodoro-readout {
@@ -945,8 +976,8 @@ body {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--running);
-  text-shadow: 0 0 8px var(--running-glow);
-  transition: color 0.25s ease, text-shadow 0.25s ease;
+  text-shadow: 0 0 6px var(--running-glow);
+  transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 .pomodoro-time {
@@ -955,63 +986,63 @@ body {
   font-weight: 700;
   letter-spacing: 0.05em;
   color: var(--text);
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+  text-shadow: 0 0 8px rgba(240, 236, 225, 0.2);
   line-height: 1;
 }
 
-/* Mode-driven accent: work = boost pink, break = nitro green, long break = podium gold */
+/* Mode-driven accent: work = cold amber, break = brass, long break = sea-green */
 .pomodoro-panel.mode-work {
   border-color: var(--running);
-  box-shadow: 0 0 24px -8px var(--running-glow), var(--shadow);
+  box-shadow: 0 0 18px -8px var(--running-glow), var(--shadow);
 }
 .pomodoro-panel.mode-work .pomodoro-mode {
   color: var(--running);
-  text-shadow: 0 0 8px var(--running-glow);
+  text-shadow: 0 0 6px var(--running-glow);
 }
 
 .pomodoro-panel.mode-break {
   border-color: var(--blue-border);
-  box-shadow: 0 0 24px -8px var(--blue-glow), var(--shadow);
+  box-shadow: 0 0 18px -8px var(--blue-glow), var(--shadow);
 }
 .pomodoro-panel.mode-break .pomodoro-mode {
   color: var(--blue);
-  text-shadow: 0 0 8px var(--blue-glow);
+  text-shadow: 0 0 6px var(--blue-glow);
 }
 
 .pomodoro-panel.mode-longBreak {
   border-color: var(--done-border);
-  box-shadow: 0 0 24px -8px var(--done-glow), var(--shadow);
+  box-shadow: 0 0 18px -8px var(--done-glow), var(--shadow);
 }
 .pomodoro-panel.mode-longBreak .pomodoro-mode {
   color: var(--done);
-  text-shadow: 0 0 8px var(--done-glow);
+  text-shadow: 0 0 6px var(--done-glow);
 }
 
 .pomodoro-panel.is-running .pomodoro-time {
-  animation: pomodoro-tick-glow 1s ease-in-out infinite;
+  animation: chrono-tick-glow 1.2s ease-in-out infinite;
 }
 
-@keyframes pomodoro-tick-glow {
+@keyframes chrono-tick-glow {
   0%,
   100% {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+    text-shadow: 0 0 8px rgba(240, 236, 225, 0.2);
   }
   50% {
-    text-shadow: 0 0 16px rgba(255, 255, 255, 0.55);
+    text-shadow: 0 0 12px rgba(240, 236, 225, 0.45);
   }
 }
 
 .pomodoro-panel.is-flashing {
-  animation: pomodoro-alert-flash 0.5s ease-in-out 3;
+  animation: klaxon-alert-flash 0.45s ease-in-out 3;
 }
 
-@keyframes pomodoro-alert-flash {
+@keyframes klaxon-alert-flash {
   0%,
   100% {
-    box-shadow: 0 0 24px -8px var(--running-glow), var(--shadow);
+    box-shadow: 0 0 18px -8px var(--running-glow), var(--shadow);
   }
   50% {
-    box-shadow: 0 0 46px 4px var(--running-glow), var(--shadow);
+    box-shadow: 0 0 32px 2px var(--running-glow), var(--shadow);
   }
 }
 
@@ -1027,24 +1058,25 @@ body {
 .pomodoro-sessions {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   flex-wrap: wrap;
   max-width: 140px;
 }
 
 .pomodoro-pip {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  width: 8px;
+  height: 8px;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border-soft);
   flex-shrink: 0;
+  transform: rotate(45deg);
 }
 
 .pomodoro-pip.is-filled {
   background: var(--done);
   border-color: var(--done);
-  box-shadow: 0 0 6px 1px var(--done-glow);
+  box-shadow: 0 0 5px 1px var(--done-glow);
 }
 
 @media (max-width: 520px) {
@@ -1057,13 +1089,13 @@ body {
   }
 }
 
-/* ---------- Pixel Art : retro rocket ship display ---------- */
+/* ---------- Pixel Art : recolored to Legion livery ---------- */
 
 .pixel-showcase {
   margin-top: 28px;
   padding-top: 18px;
   padding-bottom: 8px;
-  border-top: 1px solid var(--border-soft);
+  border-top: 1px solid var(--border);
   text-align: center;
   overflow: hidden;
 }
@@ -1079,15 +1111,14 @@ body {
 
 .pixel-showcase-label span {
   color: var(--running);
-  text-shadow: 0 0 8px var(--running-glow);
+  text-shadow: 0 0 6px var(--running-glow);
 }
 
 .pixel-art {
   width: min(100%, 280px);
   height: auto;
   display: inline-block;
-  filter: drop-shadow(0 0 5px rgba(120, 255, 255, 0.75)) drop-shadow(0 0 12px rgba(255, 16, 83, 0.55))
-    drop-shadow(0 0 18px rgba(0, 200, 255, 0.45));
+  filter: drop-shadow(0 0 4px rgba(201, 166, 103, 0.55)) drop-shadow(0 0 10px rgba(47, 183, 158, 0.3));
   animation: pixel-slide 3s ease-in-out infinite alternate;
 }
 
@@ -1100,14 +1131,13 @@ body {
   }
 }
 
-/* Pixel fill classes — same layout as the CodePen palette ($p1/$p2/$p3),
-   recolored to punchy neon tones with a multi-color glow on the parent SVG */
+/* Pixel fill classes — pearl hull, bronze fins, amber portholes */
 .ps-w {
-  fill: #d6fbff;
+  fill: #ede8dc;
 }
 .ps-r {
-  fill: #ff1053;
+  fill: #c9a667;
 }
 .ps-b {
-  fill: #00e5ff;
+  fill: #d99a3c;
 }
