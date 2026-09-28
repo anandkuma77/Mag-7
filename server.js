@@ -1,5 +1,5 @@
 /**
- * Mag 7 — server.js
+ * Rocket 7 — server.js
  *
  * A tiny Express backend that persists tasks to a local data.json file
  * using the native `fs` module (no database).
@@ -92,7 +92,7 @@ app.post("/api/tasks", (req, res) => {
 
   if (data.tasks.length >= MAX_TASKS) {
     return res.status(409).json({
-      error: "Mag 7 board is full (7/7). Delete an existing task — ideally a Done one — before adding another.",
+      error: "Rocket 7 board is full (7/7). Delete an existing task — ideally a Done one — before adding another.",
       code: "BOARD_FULL",
     });
   }
@@ -181,5 +181,5 @@ app.delete("/api/tasks/:id", (req, res) => {
 // ---------------------------------------------------------------------------
 
 app.listen(PORT, () => {
-  console.log(`Mag 7 running at http://localhost:${PORT}`);
+  console.log(`Rocket 7 running at http://localhost:${PORT}`);
 });

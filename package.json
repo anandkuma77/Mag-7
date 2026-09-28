@@ -1,7 +1,7 @@
 {
-  "name": "magnificent-7",
+  "name": "rocket-7",
   "version": "1.0.0",
-  "description": "Mag 7 - a strictly constrained daily goal tracker (7 tasks max: 3 Blue + 4 Green)",
+  "description": "Rocket 7 — a strictly constrained daily goal tracker (7 tasks max: 3 Green + 4 Magenta)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

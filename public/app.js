@@ -1,5 +1,5 @@
 /**
- * Mag 7 — frontend logic
+ * Rocket 7 — frontend logic
  *
  * All state lives on the server (data.json). This file just fetches it,
  * renders it, and calls the API on every mutation (no client-side cache
@@ -340,7 +340,8 @@ async function handleAddSubmit(e) {
 // resets automatically on a new day — matching this app's "daily" mindset.
 // ---------------------------------------------------------------------------
 
-const POMODORO_STORAGE_KEY = "mag7-pomodoro-v1";
+const POMODORO_STORAGE_KEY = "rocket7-pomodoro-v1";
+const POMODORO_STORAGE_KEY_LEGACY = "mag7-pomodoro-v1";
 const POMODORO_DURATIONS = {
   work: 25 * 60,
   break: 5 * 60,
@@ -385,7 +386,18 @@ function savePomodoroState() {
 function loadPomodoroState() {
   let saved = null;
   try {
-    saved = JSON.parse(localStorage.getItem(POMODORO_STORAGE_KEY) || "null");
+    const raw =
+      localStorage.getItem(POMODORO_STORAGE_KEY) ||
+      localStorage.getItem(POMODORO_STORAGE_KEY_LEGACY);
+    saved = JSON.parse(raw || "null");
+    if (raw && !localStorage.getItem(POMODORO_STORAGE_KEY)) {
+      try {
+        localStorage.setItem(POMODORO_STORAGE_KEY, raw);
+        localStorage.removeItem(POMODORO_STORAGE_KEY_LEGACY);
+      } catch (err) {
+        // Quota or private mode — keep using legacy read path until next save.
+      }
+    }
   } catch (err) {
     saved = null;
   }
@@ -446,8 +458,8 @@ function renderPomodoro() {
   el.pomodoroSessions.title = `${pomodoro.sessionsCompleted} focus session${pomodoro.sessionsCompleted === 1 ? "" : "s"} completed today`;
 
   document.title = pomodoro.isRunning
-    ? `${formatClock(Math.max(0, pomodoro.remainingSeconds))} · ${POMODORO_MODE_LABELS[pomodoro.mode]} — Mag 7`
-    : "Mag 7 — Daily Focus Tracker";
+    ? `${formatClock(Math.max(0, pomodoro.remainingSeconds))} · ${POMODORO_MODE_LABELS[pomodoro.mode]} — Rocket 7`
+    : "Rocket 7 — Daily Focus Tracker";
 }
 
 function playPomodoroChime() {

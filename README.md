@@ -1,4 +1,4 @@
-# Mag 7
+# Rocket 7
 
 A strictly constrained daily goal tracker. The board holds a maximum of **7 tasks**, split across two sections:
 
