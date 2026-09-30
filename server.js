@@ -9,6 +9,12 @@
  *  - "blue" section is capped at 3 tasks.
  *  - "green" section is capped at 4 tasks.
  *  - Every task has a `state` of "ready" | "running" | "done".
+ *
+ * The GTD Inbox (`/api/gtd`) is a separate, UNLIMITED capture list stored
+ * alongside tasks in data.json — it's deliberately exempt from the 7-task
+ * cap. Items only touch the cap when explicitly "promoted" onto the board
+ * via POST /api/gtd/:id/promote, which re-runs the same board/section
+ * checks as creating a task normally.
  */
 
 const express = require("express");
@@ -36,11 +42,12 @@ function readData() {
   try {
     const raw = fs.readFileSync(DATA_FILE, "utf-8");
     const parsed = JSON.parse(raw);
-    if (!parsed || !Array.isArray(parsed.tasks)) return { tasks: [] };
+    if (!parsed || !Array.isArray(parsed.tasks)) return { tasks: [], gtd: [] };
+    if (!Array.isArray(parsed.gtd)) parsed.gtd = [];
     return parsed;
   } catch (err) {
     // File missing or corrupt — start fresh rather than crash the app.
-    return { tasks: [] };
+    return { tasks: [], gtd: [] };
   }
 }
 
@@ -176,6 +183,124 @@ app.delete("/api/tasks/:id", (req, res) => {
   writeData(data);
 
   res.json({ deleted: removed });
+});
+
+// ---------------------------------------------------------------------------
+// GTD Inbox — an unlimited capture list, deliberately EXEMPT from the
+// 7-task board cap. It's a holding area for stray thoughts/tasks before
+// they're triaged ("promoted") into the Blue or Green board sections
+// (which still enforce SECTION_LIMITS / MAX_TASKS on promotion).
+// ---------------------------------------------------------------------------
+
+// READ — all GTD inbox items.
+app.get("/api/gtd", (req, res) => {
+  const data = readData();
+  res.json({ items: data.gtd });
+});
+
+// CREATE — capture a new inbox item. No limit.
+app.post("/api/gtd", (req, res) => {
+  const { text } = req.body || {};
+
+  if (typeof text !== "string" || text.trim().length === 0) {
+    return res.status(400).json({ error: "Item text is required." });
+  }
+
+  const data = readData();
+
+  const newItem = {
+    id: crypto.randomUUID(),
+    text: text.trim(),
+    createdAt: new Date().toISOString(),
+  };
+
+  data.gtd.push(newItem);
+  writeData(data);
+
+  res.status(201).json(newItem);
+});
+
+// UPDATE — edit inbox item text.
+app.put("/api/gtd/:id", (req, res) => {
+  const { id } = req.params;
+  const { text } = req.body || {};
+
+  const data = readData();
+  const item = data.gtd.find((i) => i.id === id);
+  if (!item) {
+    return res.status(404).json({ error: "Inbox item not found." });
+  }
+
+  if (typeof text !== "string" || text.trim().length === 0) {
+    return res.status(400).json({ error: "Item text cannot be empty." });
+  }
+  item.text = text.trim();
+
+  writeData(data);
+  res.json(item);
+});
+
+// DELETE — discard an inbox item.
+app.delete("/api/gtd/:id", (req, res) => {
+  const { id } = req.params;
+  const data = readData();
+  const index = data.gtd.findIndex((i) => i.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "Inbox item not found." });
+  }
+
+  const [removed] = data.gtd.splice(index, 1);
+  writeData(data);
+
+  res.json({ deleted: removed });
+});
+
+// PROMOTE — move an inbox item onto the board as a real task. Still
+// re-validates the board/section caps here, same as POST /api/tasks.
+app.post("/api/gtd/:id/promote", (req, res) => {
+  const { id } = req.params;
+  const { section } = req.body || {};
+
+  if (!VALID_SECTIONS.includes(section)) {
+    return res.status(400).json({ error: `Section must be one of: ${VALID_SECTIONS.join(", ")}` });
+  }
+
+  const data = readData();
+  const itemIndex = data.gtd.findIndex((i) => i.id === id);
+  if (itemIndex === -1) {
+    return res.status(404).json({ error: "Inbox item not found." });
+  }
+
+  if (data.tasks.length >= MAX_TASKS) {
+    return res.status(409).json({
+      error: "Rocket 7 board is full (7/7). Delete an existing task before promoting this item.",
+      code: "BOARD_FULL",
+    });
+  }
+
+  const currentSectionCount = countBySection(data.tasks, section);
+  if (currentSectionCount >= SECTION_LIMITS[section]) {
+    return res.status(409).json({
+      error: `The ${section} section is full (${SECTION_LIMITS[section]}/${SECTION_LIMITS[section]}). Delete a task from that section first.`,
+      code: "SECTION_FULL",
+    });
+  }
+
+  const [item] = data.gtd.splice(itemIndex, 1);
+
+  const newTask = {
+    id: crypto.randomUUID(),
+    text: item.text,
+    section,
+    state: "ready",
+    createdAt: new Date().toISOString(),
+  };
+
+  data.tasks.push(newTask);
+  writeData(data);
+
+  res.status(201).json(newTask);
 });
 
 // ---------------------------------------------------------------------------

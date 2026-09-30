@@ -7,6 +7,7 @@
  */
 
 const API_BASE = "/api/tasks";
+const GTD_API_BASE = "/api/gtd";
 const SECTION_LIMITS = { blue: 3, green: 4 };
 
 const el = {
@@ -19,7 +20,6 @@ const el = {
   boardCounter: document.getElementById("board-counter"),
   boardCountValue: document.getElementById("board-count-value"),
   emptyHint: document.getElementById("empty-hint"),
-  fab: document.getElementById("fab-add"),
   toast: document.getElementById("toast"),
 
   modalBackdrop: document.getElementById("add-modal-backdrop"),
@@ -38,9 +38,16 @@ const el = {
   pomodoroToggle: document.getElementById("pomodoro-toggle"),
   pomodoroReset: document.getElementById("pomodoro-reset"),
   pomodoroSessions: document.getElementById("pomodoro-sessions"),
+
+  gtdList: document.getElementById("gtd-list"),
+  gtdCount: document.getElementById("gtd-count"),
+  gtdAddForm: document.getElementById("gtd-add-form"),
+  gtdInput: document.getElementById("gtd-input"),
+  gtdEmptyHint: document.getElementById("gtd-empty-hint"),
 };
 
 let state = { tasks: [], meta: null };
+let gtdItems = [];
 
 // ---------------------------------------------------------------------------
 // API helpers
@@ -68,6 +75,18 @@ const api = {
   update: (id, patch) =>
     apiRequest(`${API_BASE}/${id}`, { method: "PUT", body: JSON.stringify(patch) }),
   remove: (id) => apiRequest(`${API_BASE}/${id}`, { method: "DELETE" }),
+};
+
+// GTD Inbox — unlimited capture list, exempt from the 7-task board cap
+// until an item is explicitly "promoted" onto the board.
+const gtdApi = {
+  getAll: () => apiRequest(GTD_API_BASE),
+  create: (text) => apiRequest(GTD_API_BASE, { method: "POST", body: JSON.stringify({ text }) }),
+  update: (id, text) =>
+    apiRequest(`${GTD_API_BASE}/${id}`, { method: "PUT", body: JSON.stringify({ text }) }),
+  remove: (id) => apiRequest(`${GTD_API_BASE}/${id}`, { method: "DELETE" }),
+  promote: (id, section) =>
+    apiRequest(`${GTD_API_BASE}/${id}/promote`, { method: "POST", body: JSON.stringify({ section }) }),
 };
 
 // ---------------------------------------------------------------------------
@@ -181,13 +200,11 @@ function render() {
   el.boardCountValue.textContent = String(total);
   el.boardCounter.classList.toggle("is-full", total >= 7);
 
-  const boardFull = total >= 7;
-  el.fab.classList.toggle("is-disabled", boardFull);
-  el.fab.title = boardFull
-    ? "Board is full (7/7) — delete a task first"
-    : "Add a task";
-
   el.emptyHint.hidden = total > 0;
+
+  // Board occupancy changed — re-render the GTD inbox too, since its
+  // "Promote" buttons' disabled state depends on current section fullness.
+  renderGtd();
 }
 
 function renderSection(listEl, tasks, limit, section) {
@@ -197,6 +214,137 @@ function renderSection(listEl, tasks, limit, section) {
   const remaining = limit - tasks.length;
   for (let i = 0; i < remaining; i++) {
     listEl.appendChild(createEmptySlot(section));
+  }
+}
+
+// ---------------------------------------------------------------------------
+// GTD Inbox — unlimited capture list, rendered independently of the board
+// ---------------------------------------------------------------------------
+
+function createGtdItemCard(item) {
+  const blueFull = state.tasks.filter((t) => t.section === "blue").length >= SECTION_LIMITS.blue;
+  const greenFull = state.tasks.filter((t) => t.section === "green").length >= SECTION_LIMITS.green;
+  const boardFull = state.tasks.length >= 7;
+
+  const card = document.createElement("div");
+  card.className = "gtd-item";
+  card.dataset.id = item.id;
+
+  const text = document.createElement("div");
+  text.className = "gtd-item-text";
+  text.contentEditable = "true";
+  text.spellcheck = false;
+  text.textContent = item.text;
+  text.addEventListener("blur", () => onGtdTextEdited(item, text));
+  text.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      text.blur();
+    }
+  });
+
+  const actions = document.createElement("div");
+  actions.className = "gtd-item-actions";
+
+  const toBlue = document.createElement("button");
+  toBlue.type = "button";
+  toBlue.className = "gtd-promote-btn gtd-promote-btn--blue";
+  toBlue.textContent = "\u2192 Blue";
+  toBlue.title = "Promote to Blue section";
+  toBlue.disabled = boardFull || blueFull;
+  toBlue.addEventListener("click", () => onPromoteGtdItem(item, "blue"));
+
+  const toGreen = document.createElement("button");
+  toGreen.type = "button";
+  toGreen.className = "gtd-promote-btn gtd-promote-btn--green";
+  toGreen.textContent = "\u2192 Green";
+  toGreen.title = "Promote to Green section";
+  toGreen.disabled = boardFull || greenFull;
+  toGreen.addEventListener("click", () => onPromoteGtdItem(item, "green"));
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "gtd-item-delete";
+  deleteBtn.innerHTML = "&#10005;"; // ✕
+  deleteBtn.title = "Discard item";
+  deleteBtn.addEventListener("click", () => onDeleteGtdItem(item));
+
+  actions.appendChild(toBlue);
+  actions.appendChild(toGreen);
+  actions.appendChild(deleteBtn);
+
+  card.appendChild(text);
+  card.appendChild(actions);
+  return card;
+}
+
+function renderGtd() {
+  el.gtdList.innerHTML = "";
+  gtdItems.forEach((item) => el.gtdList.appendChild(createGtdItemCard(item)));
+  el.gtdCount.textContent = String(gtdItems.length);
+  el.gtdEmptyHint.hidden = gtdItems.length > 0;
+}
+
+async function loadGtd() {
+  try {
+    const data = await gtdApi.getAll();
+    gtdItems = data.items;
+    renderGtd();
+  } catch (err) {
+    showToast("Failed to load GTD inbox from server.", true);
+  }
+}
+
+async function onGtdCaptureSubmit(e) {
+  e.preventDefault();
+  const text = el.gtdInput.value.trim();
+  if (!text) return;
+
+  try {
+    await gtdApi.create(text);
+    el.gtdInput.value = "";
+    await loadGtd();
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function onGtdTextEdited(item, textEl) {
+  const newText = textEl.textContent.trim();
+  if (!newText) {
+    textEl.textContent = item.text; // don't allow empty text
+    return;
+  }
+  if (newText === item.text) return;
+
+  try {
+    await gtdApi.update(item.id, newText);
+    await loadGtd();
+  } catch (err) {
+    showToast(err.message, true);
+    textEl.textContent = item.text;
+  }
+}
+
+async function onDeleteGtdItem(item) {
+  const confirmed = window.confirm(`Discard "${item.text}" from the inbox?`);
+  if (!confirmed) return;
+
+  try {
+    await gtdApi.remove(item.id);
+    showToast("Inbox item discarded.");
+    await loadGtd();
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function onPromoteGtdItem(item, section) {
+  try {
+    await gtdApi.promote(item.id, section);
+    showToast(`Promoted to ${section.charAt(0).toUpperCase() + section.slice(1)} section.`);
+    await Promise.all([loadTasks(), loadGtd()]);
+  } catch (err) {
+    showToast(err.message, true);
   }
 }
 
@@ -574,14 +722,6 @@ function initPomodoro() {
 // Event wiring
 // ---------------------------------------------------------------------------
 
-el.fab.addEventListener("click", () => {
-  if (state.tasks.length >= 7) {
-    showToast("Board is full (7/7). Delete a task — try a Done one — first.", true);
-    return;
-  }
-  openAddModal();
-});
-
 el.addBlueBtn.addEventListener("click", () => openAddModal("blue"));
 el.addGreenBtn.addEventListener("click", () => openAddModal("green"));
 
@@ -606,9 +746,12 @@ el.pomodoroToggle.addEventListener("click", () => {
 });
 el.pomodoroReset.addEventListener("click", resetPomodoro);
 
+el.gtdAddForm.addEventListener("submit", onGtdCaptureSubmit);
+
 // ---------------------------------------------------------------------------
 // Boot
 // ---------------------------------------------------------------------------
 
 loadTasks();
+loadGtd();
 initPomodoro();
