@@ -22,21 +22,17 @@ Every task has a state: `ready` → `running` → `done`. The idea is to force f
 
 1. **Clone or download this repository** and open a terminal in the project folder.
 
-2. **Install dependencies:**
+2. **Start the server:**
 
    ```bash
-   npm install
+   make
    ```
 
-3. **Start the server:**
+   This installs npm dependencies if needed, then starts the app (`npm start` → `node server.js`).
 
-   ```bash
-   npm start
-   ```
+   You can also run `make install` on its own, or `npm start` / `npm run dev` after `npm install`.
 
-   (or `npm run dev` — both run `node server.js`)
-
-4. **Open the app** in your browser at:
+3. **Open the app** in your browser at:
 
    ```
    http://localhost:3000
@@ -45,8 +41,10 @@ Every task has a state: `ready` → `running` → `done`. The idea is to force f
    By default the server runs on port `3000`. You can override this with the `PORT` environment variable:
 
    ```bash
-   PORT=4000 npm start
+   make PORT=4000
    ```
+
+   (or `PORT=4000 npm start`)
 
 ## Data persistence
 
@@ -62,6 +60,7 @@ Tasks are stored in `data.json` at the project root. This file is created automa
 │   ├── index.html     # App markup
 │   ├── app.js          # Frontend logic (fetches/updates tasks via the API)
 │   └── style.css       # Styling
+├── Makefile           # `make` installs deps if needed and starts the server
 ├── package.json
 └── package-lock.json
 ```
