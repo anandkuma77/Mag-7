@@ -83,7 +83,53 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 28px;
+  margin-bottom: 18px;
+}
+
+.board-counter[hidden] {
+  display: none;
+}
+
+/* ---------- Page tabs ---------- */
+
+.page-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.page-tab {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 8px 14px 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.page-tab:hover {
+  color: var(--ink);
+}
+
+.page-tab.is-active {
+  color: var(--ink);
+  border-bottom-color: var(--primary);
+}
+
+.page-tab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.page-panel[hidden] {
+  display: none;
 }
 
 .brand {

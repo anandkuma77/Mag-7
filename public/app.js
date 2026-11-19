@@ -749,9 +749,60 @@ el.pomodoroReset.addEventListener("click", resetPomodoro);
 el.gtdAddForm.addEventListener("submit", onGtdCaptureSubmit);
 
 // ---------------------------------------------------------------------------
+// Page tabs — Rocket 7 keeps the existing board; Levels is a separate view.
+// ---------------------------------------------------------------------------
+
+function initTabs() {
+  const tabs = [
+    {
+      id: "rocket",
+      btn: document.getElementById("tab-rocket-btn"),
+      panel: document.getElementById("tab-rocket"),
+    },
+    {
+      id: "levels",
+      btn: document.getElementById("tab-levels-btn"),
+      panel: document.getElementById("tab-levels"),
+    },
+  ];
+
+  function selectTab(id, updateHash) {
+    tabs.forEach((tab) => {
+      const active = tab.id === id;
+      tab.btn.classList.toggle("is-active", active);
+      tab.btn.setAttribute("aria-selected", String(active));
+      tab.btn.tabIndex = active ? 0 : -1;
+      tab.panel.hidden = !active;
+    });
+    el.boardCounter.hidden = id !== "rocket";
+    if (!updateHash) return;
+    const next = id === "rocket" ? location.pathname + location.search : `#${id}`;
+    history.replaceState(null, "", next);
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.btn.addEventListener("click", () => selectTab(tab.id, true));
+    tab.btn.addEventListener("keydown", (e) => {
+      let next = null;
+      if (e.key === "ArrowRight") next = tabs[(index + 1) % tabs.length];
+      else if (e.key === "ArrowLeft") next = tabs[(index - 1 + tabs.length) % tabs.length];
+      else if (e.key === "Home") next = tabs[0];
+      else if (e.key === "End") next = tabs[tabs.length - 1];
+      if (!next || next === tab) return;
+      e.preventDefault();
+      selectTab(next.id, true);
+      next.btn.focus();
+    });
+  });
+
+  selectTab(location.hash === "#levels" ? "levels" : "rocket", false);
+}
+
+// ---------------------------------------------------------------------------
 // Boot
 // ---------------------------------------------------------------------------
 
+initTabs();
 loadTasks();
 loadGtd();
 initPomodoro();

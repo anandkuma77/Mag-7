@@ -11,6 +11,10 @@
     rel="stylesheet"
   />
   <link rel="stylesheet" href="style.css" />
+  <script>
+    tailwind.config = { corePlugins: { preflight: false } };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 
@@ -28,6 +32,30 @@
         <span id="board-count-value">0</span>/7
       </div>
     </header>
+
+    <div class="page-tabs" role="tablist" aria-label="Pages">
+      <button
+        type="button"
+        class="page-tab is-active"
+        id="tab-rocket-btn"
+        role="tab"
+        aria-selected="true"
+        aria-controls="tab-rocket"
+        data-tab="rocket"
+      >Rocket 7</button>
+      <button
+        type="button"
+        class="page-tab"
+        id="tab-levels-btn"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-levels"
+        tabindex="-1"
+        data-tab="levels"
+      >Levels</button>
+    </div>
+
+    <div class="page-panel" id="tab-rocket" role="tabpanel" aria-labelledby="tab-rocket-btn">
 
     <!-- Pomodoro lap timer: client-side only, resumes across reloads via localStorage -->
     <section class="pomodoro" aria-label="Pomodoro focus timer">
@@ -110,6 +138,109 @@
     <p class="empty-hint" id="empty-hint" hidden>
       No tasks yet — hit <strong>+</strong> to add your first focus of the day.
     </p>
+    </div>
+
+    <div class="page-panel" id="tab-levels" role="tabpanel" aria-labelledby="tab-levels-btn" hidden>
+      <section class="relative overflow-hidden rounded-3xl bg-slate-900 px-4 pb-28 pt-10 text-slate-100 sm:px-8 sm:pt-14" aria-labelledby="levels-heading">
+        <div class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,rgba(224,242,254,0.22),transparent_62%)]" aria-hidden="true"></div>
+        <svg class="pointer-events-none absolute bottom-0 left-0 h-40 w-full opacity-50" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true">
+          <path fill="#064e3b" d="M0 220V150l180-78 150 54 190-96 170 62 190-108 210 74 170-86 180 48V220H0Z"/>
+          <path fill="#065f46" d="M0 220V186l230-52 190 42 210-74 220 58 230-96 180 44 180-28V220H0Z"/>
+        </svg>
+
+        <header class="relative z-10 mx-auto mb-14 max-w-2xl text-center">
+          <p class="m-0 text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300">Ten levels</p>
+          <h2 id="levels-heading" class="m-0 mt-3 bg-gradient-to-r from-emerald-300 via-amber-200 to-sky-100 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">Mountain Progression</h2>
+          <p class="m-0 mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-300">From the valley floor to the summit, one camp at a time.</p>
+        </header>
+
+        <div class="relative z-10 mx-auto max-w-3xl">
+          <div class="absolute bottom-0 left-6 top-0 w-1.5 -translate-x-1/2 rounded-full bg-[linear-gradient(to_top,#047857_0%,#10b981_22%,#fbbf24_50%,#f97316_74%,#e0f2fe_100%)] md:left-1/2" aria-hidden="true"></div>
+          <ol class="m-0 list-none p-0">
+            <li class="group relative mb-10 md:mb-16 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-white bg-gradient-to-br from-amber-200 via-white to-sky-100 text-sm font-bold text-slate-900 shadow-[0_0_18px_rgba(253,224,71,0.85)] transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(255,255,255,0.95)]" aria-hidden="true">10</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-slate-500/20 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-slate-300 ring-1 ring-slate-400/30">Locked</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 10: The Summit</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">The top of the mountain. The whole route sits below.</p>
+              </article>
+            </li>
+            <li class="group relative mb-10 md:mb-16 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-red-200 bg-red-500 text-sm font-bold text-white transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.85)]" aria-hidden="true">9</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-slate-500/20 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-slate-300 ring-1 ring-slate-400/30">Locked</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 9: Final Pitch</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">The last exposed climb before the peak.</p>
+              </article>
+            </li>
+            <li class="group relative mb-10 md:mb-16 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-orange-200 bg-orange-600 text-sm font-bold text-white transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(234,88,12,0.85)]" aria-hidden="true">8</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-slate-500/20 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-slate-300 ring-1 ring-slate-400/30">Locked</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 8: The Couloir</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">A steep corridor cut into the face.</p>
+              </article>
+            </li>
+            <li class="group relative mb-10 md:mb-16 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-orange-200 bg-orange-500 text-sm font-bold text-white transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(249,115,22,0.85)]" aria-hidden="true">7</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-slate-500/20 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-slate-300 ring-1 ring-slate-400/30">Locked</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 7: Ice Field</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">A frozen stretch. Every step is deliberate.</p>
+              </article>
+            </li>
+            <li class="group relative mb-10 md:mb-16 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-amber-100 bg-yellow-300 text-sm font-bold text-slate-900 transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(253,224,71,0.85)]" aria-hidden="true">6</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-slate-500/20 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-slate-300 ring-1 ring-slate-400/30">Locked</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 6: Snow Line</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">The trail turns white and the footing changes.</p>
+              </article>
+            </li>
+            <li class="group relative mb-10 md:mb-16 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-amber-100 bg-amber-400 text-sm font-bold text-slate-900 transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(251,191,36,0.9)]" aria-hidden="true">5</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-amber-400/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-amber-200 ring-1 ring-amber-300/40">Current</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 5: High Camp</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">The overnight stop. The summit is the next push.</p>
+              </article>
+            </li>
+            <li class="group relative mb-10 md:mb-16 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-amber-100 bg-amber-500 text-sm font-bold text-slate-900 transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(245,158,11,0.85)]" aria-hidden="true">4</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-emerald-300 ring-1 ring-emerald-400/40">Completed</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 4: Alpine Meadow</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">Open grass above the trees. The air turns thin.</p>
+              </article>
+            </li>
+            <li class="group relative mb-10 md:mb-16 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-emerald-200 bg-emerald-400 text-sm font-bold text-slate-900 transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(52,211,153,0.85)]" aria-hidden="true">3</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-emerald-300 ring-1 ring-emerald-400/40">Completed</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 3: Ridge Path</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">A narrow track with the valley still in sight.</p>
+              </article>
+            </li>
+            <li class="group relative mb-10 md:mb-16 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-emerald-200 bg-emerald-500 text-sm font-bold text-white transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(16,185,129,0.85)]" aria-hidden="true">2</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-emerald-300 ring-1 ring-emerald-400/40">Completed</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 2: Treeline</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">The woods thin out and the slope begins.</p>
+              </article>
+            </li>
+            <li class="group relative mb-0 md:w-1/2 md:pr-12 md:odd:text-right md:[&>div]:odd:left-auto md:[&>div]:odd:right-0 md:[&>div]:odd:translate-x-1/2 md:even:ml-auto md:even:pl-12 md:even:pr-0 md:[&>div]:even:left-0 md:[&>div]:even:-translate-x-1/2">
+              <div class="absolute left-6 top-5 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-emerald-300 bg-emerald-600 text-sm font-bold text-white transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(5,150,105,0.9)]" aria-hidden="true">1</div>
+              <article class="ml-14 rounded-2xl border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105 sm:p-5 md:ml-0">
+                <div class="mb-2"><span class="inline-flex items-center rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-emerald-300 ring-1 ring-emerald-400/40">Completed</span></div>
+                <h3 class="m-0 text-base font-semibold text-white sm:text-lg">Level 1: Valley Base</h3>
+                <p class="m-0 mt-1 text-sm leading-relaxed text-slate-300">The trail starts here, on solid ground.</p>
+              </article>
+            </li>
+          </ol>
+        </div>
+      </section>
+    </div>
   </div>
 
   <!-- Toast for quick feedback -->
